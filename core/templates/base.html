@@ -71,23 +71,75 @@
         </nav>
     </header>
 
-    <!-- ====== Flash Messages ====== -->
-    {% comment %} <section class="w-11/12 mx-auto mt-4">
-        {% for m in messages %}
-            {% if m.tags == 'success' %}
-                {% set colors = 'bg-green-100 text-green-800 border-green-300' %}
-            {% elif m.tags == 'warning' %}
-                {% set colors = 'bg-yellow-100 text-yellow-800 border-yellow-300' %}
-            {% else %}
-                {% set colors = 'bg-red-100 text-red-800 border-red-300' %}
-            {% endif %}
-            <div class="border {{ colors }} rounded px-4 py-3 mb-3 text-center text-sm sm:text-base">
-                {{ m }}
-            </div>
-        {% endfor %}
-    </section> {% endcomment %}
+
     <!-- ====== Flash Messages ====== -->
     <section class="w-11/12 mx-auto mt-4">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 shadow-md mt-2" role="alert">
+                <div class="flex">
+                    <div class="py-1">
+                    <svg class="fill-current h-6 w-6 text-green-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M10 15l-5.5-5.5 1.42-1.42L10 12.17l4.09-4.09 1.41 1.41z"/>
+                    </svg>
+                    </div>
+                    <div>
+                    <p class="font-bold">Success!</p>
+                    <p class="text-sm">{{ message }}</p>
+                    </div>
+                </div>
+                </div>
+
+            {% elif message.tags == 'error' %}
+                <div class="bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow-md mt-2" role="alert">
+                <div class="flex">
+                    <div class="py-1">
+                    <svg class="fill-current h-6 w-6 text-red-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z"/>
+                    </svg>
+                    </div>
+                    <div>
+                    <p class="font-bold">Error!</p>
+                    <p class="text-sm">{{ message }}</p>
+                    </div>
+                </div>
+                </div>
+
+            {% elif message.tags == 'warning' %}
+                <div class="bg-yellow-100 border-t-4 border-yellow-500 rounded-b text-yellow-900 px-4 py-3 shadow-md mt-2" role="alert">
+                <div class="flex">
+                    <div class="py-1">
+                    <svg class="fill-current h-6 w-6 text-yellow-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z"/>
+                    </svg>
+                    </div>
+                    <div>
+                    <p class="font-bold">Warning!</p>
+                    <p class="text-sm">{{ message }}</p>
+                    </div>
+                </div>
+                </div>
+
+            {% else %}
+                <div class="bg-gray-100 border-t-4 border-gray-500 rounded-b text-gray-900 px-4 py-3 shadow-md mt-2" role="alert">
+                <div class="flex">
+                    <div class="py-1">
+                    <svg class="fill-current h-6 w-6 text-gray-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z"/>
+                    </svg>
+                    </div>
+                    <div>
+                    <p class="font-bold">Notice:</p>
+                    <p class="text-sm">{{ message }}</p>
+                    </div>
+                </div>
+                </div>
+            {% endif %}
+            {% endfor %}
+    </section>
+
+
+    {% comment %} <section class="w-11/12 mx-auto mt-4">
         {% for m in messages %}
             {% if m.tags == 'success' %}
                 {% with colors='bg-green-100 text-green-800 border-green-300' %}
@@ -109,7 +161,7 @@
                 {% endwith %}
             {% endif %}
         {% endfor %}
-</section>
+    </section> {% endcomment %}
 
     <!-- Main content -->
     <main class="flex-1 w-11/12 mx-auto mb-10">

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Create Account{% endblock %}
+
+{% block content %}
+<section class="min-h-[85vh] flex items-center justify-center">
+  <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl p-6 sm:p-10">
+
+    <h1 class="text-2xl sm:text-3xl font-semibold text-center mb-10">
+      <i class="fa-solid fa-user-plus text-accent"></i>
+      Create Account
+    </h1>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-10">
+      {% csrf_token %}
+
+      <!-- ACCOUNT INFO -->
+      <div>
+        <h2 class="mb-6 text-lg font-medium text-gray-800 flex items-center gap-2">
+            <i class="fa-solid fa-lock text-primary"></i>
+            Account Information
+        </h2>
+
+        <div class="grid gap-6 sm:grid-cols-2">
+            {% for field in account_fields %}
+            <div class="{% if field.name == 'username' or field.name == 'email' or field.name == 'password1' or field.name == 'password2' %}sm:col-span-2{% endif %}">
+                <label for="{{ field.id_for_label }}" class="block mb-1 text-sm font-medium text-gray-700">
+                {{ field.label }}<span class="text-red-500">*</span>
+                </label>
+                {{ field }}
+                {% if field.errors %}<p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        </div>
+
+      <!-- PERSONAL DETAILS -->
+      <div>
+        <h2 class="mb-6 text-lg font-medium text-gray-800 flex items-center gap-2">
+          <i class="fa-solid fa-id-card text-accent"></i>
+          Personal Details
+        </h2>
+
+        <div class="grid gap-6 sm:grid-cols-2">
+          {% for field in personal_fields %}
+            <div class="{% if field.name == 'profile_picture' %}sm:col-span-2{% endif %}">
+              <label for="{{ field.id_for_label }}" class="block mb-1 text-sm font-medium text-gray-700">
+                {{ field.label }}{% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+              </label>
+              {{ field }}
+              {% if field.errors %}<p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>{% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- ADDRESS -->
+      <div>
+        <h2 class="mb-6 text-lg font-medium text-gray-800 flex items-center gap-2">
+          <i class="fa-solid fa-location-dot text-primary"></i>
+          Address
+        </h2>
+
+        <div class="grid gap-6 sm:grid-cols-2">
+          {% for field in address_fields %}
+            <div class="{% if field.name == 'street_address' %}sm:col-span-2{% endif %}">
+              <label for="{{ field.id_for_label }}" class="block mb-1 text-sm font-medium text-gray-700">
+                {{ field.label }}<span class="text-red-500">*</span>
+              </label>
+              {{ field }}
+              {% if field.errors %}<p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>{% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- SUBMIT -->
+      <button type="submit"
+              class="w-full inline-flex items-center justify-center gap-3 bg-accent hover:bg-accent-dark text-white font-medium rounded-lg px-8 py-4 shadow-md hover:shadow-lg transition">
+        <i class="fa-solid fa-paper-plane"></i> Register
+      </button>
+
+      <p class="text-center text-sm text-gray-600">
+        Already have an account?
+        <a href="{% url 'login' %}" class="font-medium text-primary hover:underline">Log in</a>
+      </p>
+    </form>
+  </div>
+</section>
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends "base.html" %}
+
+{% block content %}
+
+    {% load crispy_forms_tags %}
+    <form method="post" style="width: 50%; height: 500px; margin:auto;" enctype="multipart/form-data" class="pt-4">
+        <h1>{{title}}</h1>
+        {% csrf_token %}
+        {{form|crispy}}
+        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </form>  
+
+{% endblock content %} {% endcomment %}

@@ -1,0 +1,397 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ book.title }} – Details{% endblock %}
+
+{% block content %}
+
+<!-- ========== Book Header ========== -->
+<section
+    class="bg-white rounded-xl shadow p-6 sm:p-8 flex flex-col lg:flex-row gap-8">
+
+    <!-- Cover image -->
+    <div class="flex-shrink-0 self-center lg:self-start">
+        {% if book.image %}
+            <img src="{{ book.image.url }}"
+                 alt="{{ book.title }}"
+                 class="w-56 h-80 sm:w-64 sm:h-96 object-cover rounded-lg shadow-inner">
+        {% else %}
+            <div class="w-56 h-80 sm:w-64 sm:h-96 flex items-center justify-center
+                        rounded-lg bg-gray-100 text-gray-400">
+                <i class="fa-solid fa-book-open text-5xl"></i>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Details -->
+    <div class="flex-1 space-y-4">
+        <h1 class="text-2xl sm:text-3xl font-semibold">{{ book.title }}</h1>
+
+        <p class="text-gray-700 leading-relaxed">{{ book.description }}</p>
+
+        <div class="flex flex-wrap items-center gap-4 pt-1">
+            <span class="inline-flex items-center gap-1 text-primary font-medium">
+                <i class="fa-solid fa-tag"></i> {{ book.price }} ৳
+            </span>
+
+            <div class="flex flex-wrap gap-2">
+                {% for cat in book.category.all %}
+                    <span
+                        class="text-xs bg-primary/10 text-primary
+                               px-2 py-0.5 rounded-full">
+                        {{ cat.name }}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Borrow CTA -->
+        {% if request.user.is_authenticated %}
+            {% if book.is_borrowed %}
+                    {% if is_borrowed_by_current_user %}
+                        <p class="text-green-600 font-medium mt-4">
+                            <i class="fa-solid fa-lock"></i> Currently Borrowed by You
+                        </p>
+                    {% else %}
+                        <p class="text-red-600 font-medium mt-4">
+                            <i class="fa-solid fa-lock"></i> Currently Borrowed by another user
+                        </p>
+                    {% endif %}
+            {% else %}
+                <form method="post" action="{% url 'borrow' book.id %}" class="mt-4">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 px-6 py-2 rounded-lg
+                                   bg-green-600 hover:bg-green-700 text-white font-medium
+                                   transition">
+                        <i class="fa-solid fa-circle-arrow-right"></i> Borrow Now
+                    </button>
+                </form>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}"
+               class="inline-block mt-4 text-primary hover:underline">
+                <i class="fa-solid fa-right-to-bracket"></i> Log in to borrow
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+
+
+<!-- ========== Reviews ========== -->
+<style>
+    @media (min-width: 1024px) {
+        article.review-card {
+            transition: all 0.3s ease;
+        }
+        article.review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+    }
+</style>
+
+<section class="mt-10">
+    <h2 class="text-xl font-semibold mb-4">
+        <i class="fa-solid fa-star text-accent"></i>
+        Reviews ({{ reviews|length }})
+    </h2>
+
+    <div class="space-y-6">
+    {% for review in reviews %}
+        <article class="review-card bg-white rounded-lg shadow p-4 sm:p-6 grid grid-cols-[auto_1fr] gap-4 rounded-xl border border-gray-100 max-w-2xl mx-auto">
+            <!-- Avatar -->
+            <div class="flex flex-col items-center justify-start">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm font-semibold">
+                    {{ review.user.first_name|slice:":1"|default:"U" }}{{ review.user.last_name|slice:":1" }}
+                </div>
+
+                <!-- Star Rating -->
+                <div class="flex justify-center gap-1 mt-2">
+                    <span class="sr-only">{{ review.ratting }} out of 5 stars</span>
+                    {% for i in "12345" %}
+                        <span class="{% if forloop.counter <= review.ratting|floatformat:0|add:0 %}text-yellow-400{% else %}text-gray-300{% endif %} text-lg" aria-hidden="true">★</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Review Content -->
+            <div>
+                <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                    <div>
+                        <p class="font-semibold text-gray-800">
+                            {{ review.user.first_name }} {{ review.user.last_name }}
+                        </p>
+                        <time class="text-sm text-gray-500">
+                            {{ review.date|date:"d M Y H:i" }}
+                        </time>
+                    </div>
+                </header>
+                <p class="text-gray-700 leading-relaxed text-sm sm:text-base">
+                    {{ review.review }}
+                </p>
+            </div>
+        </article>
+    {% empty %}
+        <p class="text-gray-500 italic">No reviews yet.</p>
+    {% endfor %}
+    </div>
+</section>
+
+
+{% comment %} <style>
+    @media (min-width: 1024px) {
+        article.review-card {
+            transition: all 0.3s ease;
+        }
+        article.review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+    }
+</style>
+
+<section class="mt-10">
+    <h2 class="text-xl font-semibold mb-4">
+        <i class="fa-solid fa-star text-accent"></i>
+        Reviews ({{ reviews|length }})
+    </h2>
+
+    <div class="space-y-6">
+    {% for review in reviews %}
+        <article class="review-card bg-white rounded-lg shadow p-5 lg:p-6 grid gap-4 lg:grid-cols-[auto_1fr] lg:gap-x-6 rounded-xl border border-gray-100">
+            <!-- Avatar -->
+            <div class="flex flex-col items-center justify-start">
+                <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm font-semibold">
+                    {{ review.user.first_name|slice:":1"|default:"U" }}{{ review.user.last_name|slice:":1" }}
+                </div>
+                <div class="text-sm text-gray-500 mt-2 text-center hidden lg:block">
+                    {{ review.get_ratting_display }}
+                </div>
+            </div>
+
+            <!-- Review Content -->
+            <div>
+                <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                    <div>
+                        <p class="font-semibold text-gray-800">
+                            {{ review.user.first_name }} {{ review.user.last_name }}
+                        </p>
+                        <time class="text-sm text-gray-500">
+                            {{ review.date|date:"d M Y H:i" }}
+                        </time>
+                    </div>
+                    <div class="text-accent font-medium sm:text-right lg:hidden">
+                        {{ review.get_ratting_display }}
+                    </div>
+                </header>
+                <p class="text-gray-700 leading-relaxed text-sm sm:text-base">
+                    {{ review.review }}
+                </p>
+            </div>
+        </article>
+    {% empty %}
+        <p class="text-gray-500 italic">No reviews yet.</p>
+    {% endfor %}
+    </div>
+
+</section> {% endcomment %}
+
+
+
+<!-- ========== Review Form (only for previous borrowers) ========== -->
+
+{% if user_ever_borrowed %}
+<section class="mt-12 bg-white rounded-xl shadow-lg p-6 sm:p-8 max-w-2xl mx-auto">
+    <h2 class="text-lg sm:text-xl font-semibold mb-6 flex items-center gap-2">
+        <i class="fa-solid fa-pen-to-square"></i>
+        Leave a Review
+    </h2>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- ========= Star Rating ========= -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Your rating
+            </label>
+
+            <style>
+                .star-rating-container {
+                    display: flex;
+                    flex-direction: row-reverse;
+                    justify-content: flex-end;
+                    align-items: center;
+                    gap: 1px;
+                }
+                @media (min-width: 640px) {
+                    .star-rating-container {
+                        gap: 0.5rem;
+                    }
+                }
+            </style>
+
+            <div class="star-rating-container">
+                {# Use the field’s choices so it stays in sync with the model #}
+                {% for val, lbl in form.ratting.field.choices %}
+                    <input  type="radio"
+                            id="star-{{ val }}"
+                            name="{{ form.ratting.html_name }}"
+                            value="{{ val }}"
+                            class="sr-only peer"
+                            {% if form.ratting.value == val %}checked{% endif %}
+                            required>
+                    <label for="star-{{ val }}"
+                        class="cursor-pointer text-2xl sm:text-3xl text-gray-300
+                                peer-checked:text-yellow-400
+                                hover:text-yellow-300 transition">
+                        ★
+                        <span class="sr-only">{{ val }} star{% if val != '1' %}s{% endif %}</span>
+                    </label>
+                {% endfor %}
+            </div>
+
+            {% if form.ratting.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.ratting.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+
+        <!-- ========= Review Text ========= -->
+        <div>
+            <label for="id_review"
+                   class="block text-sm font-medium text-gray-700 mb-2">
+                Your review
+            </label>
+
+            <textarea  name="{{ form.review.html_name }}"
+                       id="id_review"
+                       rows="5"
+                       class="w-full rounded-lg border border-gray-300 px-4 py-3
+                              focus:ring-primary focus:border-primary
+                              text-sm sm:text-base resize-y"
+                       required>{{ form.review.value|default_if_none:'' }}</textarea>
+
+            {% if form.review.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.review.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <!-- ========= Submit ========= -->
+        <button type="submit"
+                class="inline-flex items-center gap-2 px-6 py-3 rounded-lg
+                       bg-accent hover:bg-accent-dark text-white font-medium
+                       shadow-md hover:shadow-lg transition">
+            <i class="fa-solid fa-paper-plane"></i>
+            Submit Review
+        </button>
+    </form>
+</section>
+{% else %}
+    <p class="mt-10 text-center text-gray-500">
+        <i class="fa-solid fa-circle-info"></i>
+        Borrow this book first to leave a review.
+    </p>
+{% endif %}
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <div class="card mb-3" >
+        <div class="row g-0">
+            
+            {% if book.image %}
+                <div class="ratio ratio-4x3">
+                    <img src="{{ book.image.url }}" class="img-fluid" alt="Book Image" style="object-fit: cover;">
+                </div>
+            {% endif %}
+        
+            <div class="card-body w-50 my-auto col-md-6 " >
+                <div class="mx-auto mb-1" style="width: 80%;">
+
+                    
+                    <h1 class="card-title ">{{ book.title }}</h1>
+                    <p class="card-text"><b>Description :</b> {{ book.description }}</p>
+                    <p class="card-text"><b>Borrow Price :</b> {{ book.price }} Taka</p>
+                    <p><b>Category : </b>
+                        {% for cat in book.category.all %}
+                           <button class="btn btn-info btn-sm m-2">{{ cat.name }}</button>
+                        {% endfor %}
+                    </p>
+                    
+                    {% if request.user.is_authenticated %}
+                        {% if book.is_borrowed %}
+                            <i class="text-danger"> Not Available For Now</i>
+                        {% else %}
+                        <form method="post" action="{% url 'borrow' book.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success ">Borrow</button>
+                        </form>
+                        {% endif %}
+
+                    {% endif %}
+                </div>
+                
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="card mx-3 p-3">
+        <div class="card-body">
+            <h5>Total Reviews : {{ reviews | length }}</h5>
+            
+            {% for review in reviews %}
+                <div class="card p-3 mb-3 mx-auto" style="width: 50%;">
+                    <div class="card-body">
+                        <div class="d-flex mb-3">
+                            <img src="" class="rounded-circle me-3" alt="User Avatar"> 
+                            <div class="d-flex align-items-center w-100">
+                                <h5 class="card-title mb-0">{{ review.user.first_name }} {{ review.user.last_name }}</h5>
+                                <small class="text-muted ms-auto" >Reviewed on {{ review.date }}</small>
+                            </div>
+                        </div>
+                        <p class="card-text">{{ review.get_ratting_display }}</p>
+                        <p class="card-text">{{ review.review }}</p>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-sm btn-outline-primary me-2">
+                                <i class="bi bi-hand-thumbs-up"></i> Like
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-reply"></i> Reply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    {% if user_ever_borrowed %}
+        <div class="bg-white m-3 p-5 rounded">
+            <form class="w-50 m-auto" method="post" >
+                <h1 class="text-center">Review</h1>
+                {% csrf_token %}
+                {{ form | crispy }}
+                <button class="btn btn-info " style="color: navy ;" type="submit">Submit</button>
+            </form>
+        </div>
+    {% endif %}
+
+{% endblock content %} {% endcomment %}

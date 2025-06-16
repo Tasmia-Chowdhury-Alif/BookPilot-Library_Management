@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<section class="min-h-[85vh] flex items-center justify-center">
+
+  <div class="w-full max-w-lg bg-white rounded-xl shadow-lg p-8 sm:p-10">
+    <h1 class="text-2xl sm:text-3xl font-semibold text-center mb-8">
+      <i class="fa-solid fa-right-to-bracket text-primary"></i>
+      Login
+    </h1>
+
+    <form method="post" class="space-y-8">
+      {% csrf_token %}
+
+      <!-- Username -->
+      <div>
+        <label for="{{ form.username.id_for_label }}" class="block mb-1 text-sm font-medium text-gray-700">
+          {{ form.username.label }}<span class="text-red-500">*</span>
+        </label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <p class="mt-1 text-sm text-red-600">{{ form.username.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label for="{{ form.password.id_for_label }}" class="block mb-1 text-sm font-medium text-gray-700">
+          {{ form.password.label }}<span class="text-red-500">*</span>
+        </label>
+        {{ form.password }}
+        {% if form.password.errors %}
+          <p class="mt-1 text-sm text-red-600">{{ form.password.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Submit -->
+      <button type="submit"
+              class="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg px-6 py-3 shadow-md hover:shadow-lg transition">
+        <i class="fa-solid fa-arrow-right"></i> Log In
+      </button>
+
+      <p class="text-center text-sm text-gray-600 mt-6">
+        Don’t have an account?
+        <a href="{% url 'register' %}" class="font-medium text-accent hover:underline">Register</a>
+      </p>
+    </form>
+  </div>
+
+</section>
+{% endblock content %}
+
+
+
+
+
+{% comment %} {% extends "base.html" %}
+
+{% block content %}
+
+    {% load crispy_forms_tags %}
+    <form method="post" style="width: 50%; height: 500px; margin:auto;" enctype="multipart/form-data" class="pt-4">
+        <h1>{{title}}</h1>
+        {% csrf_token %}
+        {{form|crispy}}
+        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </form>  
+
+{% endblock content %} {% endcomment %}

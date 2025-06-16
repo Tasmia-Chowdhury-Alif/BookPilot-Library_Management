@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Deposit Money{% endblock %}
+
+{% block content %}
+<section class="min-h-[75vh] flex items-center justify-center">
+
+  <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8 sm:p-10">
+    <h1 class="text-2xl sm:text-3xl font-semibold text-center mb-8">
+      <i class="fa-solid fa-sack-dollar text-accent"></i>
+      Deposit Money
+    </h1>
+
+    <form method="post" class="space-y-8">
+      {% csrf_token %}
+
+      <!-- Amount input -->
+      <div>
+        <label for="{{ form.amount.id_for_label }}" class="block mb-1 text-sm font-medium text-gray-700">
+          Amount (৳)<span class="text-red-500">*</span>
+        </label>
+        {{ form.amount }}
+        {% if form.amount.errors %}
+          <p class="mt-1 text-sm text-red-600">{{ form.amount.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Submit -->
+      <button type="submit"
+              class="w-full inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white font-medium rounded-lg px-6 py-3 shadow-md hover:shadow-lg transition">
+        <i class="fa-solid fa-circle-dollar-to-slot"></i>
+        Deposit
+      </button>
+    </form>
+  </div>
+
+</section>
+{% endblock content %}
+
+
+
+
+{% comment %} {% extends "base.html" %}
+
+{% block content %}
+
+    {% load crispy_forms_tags %}
+    <form method="post" style="width: 50%; height: 500px; margin:auto;" enctype="multipart/form-data" class="pt-4">
+        <h1>{{title}}</h1>
+        {% csrf_token %}
+        {{form|crispy}}
+        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </form>  
+
+{% endblock content %} {% endcomment %}

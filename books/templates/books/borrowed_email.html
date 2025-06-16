@@ -1,0 +1,30 @@
+<!-- Book borrowed confirmation -->
+<div style="background:linear-gradient(135deg,#f1fafe,#d0f0ff);padding:32px;font-family:'Helvetica Neue',Arial,sans-serif;color:#111;line-height:1.55;">
+  <h2 style="margin:0 0 16px;color:#0ea5e9;font-weight:700;">
+    📚 Book Borrowed Successfully!
+  </h2>
+
+  <p style="margin:0 0 12px;">
+    Hi <strong>{{ user.first_name }} {{ user.last_name }}</strong>,
+  </p>
+
+  <p style="margin:0 0 12px;">
+    Your account has been charged
+    <strong style="color:#ef4444;">৳{{ amount }}</strong> for your latest borrow.
+  </p>
+
+  <p style="margin:0 0 24px;">
+    Your current balance is
+    <strong style="color:#0f172a;">৳{{ user.profile.balance }}</strong>.  
+    Enjoy your book, and remember—you can view or return it anytime from your profile.
+  </p>
+
+  <hr style="border:none;height:1px;background:#bae6fd;margin:24px 0;" />
+
+  <p style="margin:0;">
+    Questions? Just reply to this email.
+  </p>
+  <p style="margin:4px 0 0;font-weight:700;color:#0ea5e9;">
+    — The BookPilot Team
+  </p>
+</div>

@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Profile - {{ request.user.username }}{% endblock %}
+
+{% block content %}
+
+<!-- ====== Profile Header ====== -->
+<section class="bg-white rounded-lg shadow p-6 sm:p-8 mb-10">
+    <div class="flex flex-col sm:flex-row items-center gap-6">
+
+        <!-- Avatar -->
+        <div class="flex-shrink-0">
+            {% if request.user.profile.profile_picture %}
+                <img src="{{ request.user.profile.profile_picture.url }}"
+                     alt="Profile picture"
+                     class="w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover ring-4 ring-primary/20 shadow">
+            {% else %}
+                <img src="{% static 'default-avatar.png' %}"
+                     alt="Profile picture"
+                     class="w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover ring-4 ring-primary/20 shadow">
+            {% endif %}
+        </div>
+
+        <!-- User Info -->
+        <div class="text-center sm:text-left flex-1 space-y-1">
+            <h2 class="text-2xl sm:text-3xl font-semibold">{{ request.user.username }}</h2>
+            <p class="text-gray-600">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+
+            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-6 text-gray-700">
+                <span class="mt-2 sm:mt-0">
+                    <strong>Balance:</strong>
+                    <span class="font-mono">{{ request.user.profile.balance|floatformat:2 }} ৳</span>
+                </span>
+
+                <span>
+                    <strong>Birth Date:</strong>
+                    {{ request.user.profile.birth_date|date:"d M Y" }}
+                </span>
+            </div>
+
+            <a href="{% url 'deposit' %}"
+               class="inline-block mt-4 bg-accent hover:bg-accent-dark text-white font-medium px-5 py-2 rounded shadow">
+                Deposit Money
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<!-- ====== Borrow History ====== -->
+<section class="bg-white rounded-lg shadow p-4 sm:p-6">
+    <h3 class="text-xl font-semibold mb-4">Borrow History</h3>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+            <thead>
+                <tr class="bg-gray-50 text-gray-600 text-left whitespace-nowrap">
+                    <th class="py-3 px-4 font-medium">ID</th>
+                    <th class="py-3 px-4 font-medium">Book</th>
+                    <th class="py-3 px-4 font-medium">Price</th>
+                    <th class="py-3 px-4 font-medium">Borrowed On</th>
+                    <th class="py-3 px-4 font-medium">Balance After Borrow</th>
+                    <th class="py-3 px-4 font-medium">Returned On</th>
+                    <th class="py-3 px-4 font-medium">Balance After Return</th>
+                    <th class="py-3 px-4 font-medium">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+            {% for borrow in borrow_history %}
+                <tr class="whitespace-nowrap">
+                    <td class="py-3 px-4">{{ borrow.id }}</td>
+                    <td class="py-3 px-4">{{ borrow.book.title }}</td>
+                    <td class="py-3 px-4">{{ borrow.book.price|floatformat:2 }} ৳</td>
+                    <td class="py-3 px-4">{{ borrow.borrow_date|date:"d M Y H:i" }}</td>
+                    <td class="py-3 px-4">{{ borrow.balance_after_borrow|floatformat:2 }}</td>
+                    <td class="py-3 px-4">
+                        {% if borrow.return_date %}{{ borrow.return_date|date:"d M Y H:i" }}{% else %}N/A{% endif %}
+                    </td>
+                    <td class="py-3 px-4">
+                        {% if borrow.balance_after_return %}{{ borrow.balance_after_return|floatformat:2 }}{% else %}N/A{% endif %}
+                    </td>
+
+                    <!-- Return button / status -->
+                    <td class="py-3 px-4">
+                        {% if borrow.is_returned %}
+                            <span class="text-green-600 font-semibold">Returned</span>
+                        {% else %}
+                            <form method="post" action="{% url 'return' borrow.id %}">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
+                                    Return
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends "base.html" %}
+
+{% block content %}
+
+    <h1>Profile Page</h1>
+    <a href="{% url "deposit" %}">Deposit Money To Your Account</a>
+
+
+    <table class="table table-bordered w-75 mx-auto">
+        <thead>
+              <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Book Name</th>
+                  <th scope="col">Borrow Price</th>
+                  <th scope="col">Borrow Date</th>
+                  <th scope="col">Balance After Borrow</th>
+                  <th scope="col">Return Date</th>
+                  <th scope="col">Balance After Return</th>
+                  <th scope="col">Return Book</th>
+              </tr>
+        </thead>
+        <tbody>
+            {% for borrow in borrow_history %}
+               <tr>
+                   <th scope="row">{{ borrow.id }}</th>
+                   <td scope="row">{{ borrow.book.title }}</td>
+                   <td scope="row">{{ borrow.book.price }}</td>
+                   <td scope="row">{{ borrow.borrow_date }}</td>
+                   <td scope="row">{{ borrow.balance_after_borrow }}</td>
+                   <td scope="row">{{ borrow.return_date }}</td>
+                   <td scope="row">{{ borrow.balance_after_return }}</td>
+                   {% if borrow.is_returned %}
+                       <td>
+                         <p class="text-success fs-italic">Returned</p>
+                       </td>
+                   {% else %}
+                       <td>
+                           <form method="post" action="{% url 'return' borrow.id  %}">
+                               {% csrf_token %}
+                               <button class="btn btn-danger" type="submit">Return</button>
+                           </form>
+                       </td>
+                   {% endif %}
+               </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content %} {% endcomment %}

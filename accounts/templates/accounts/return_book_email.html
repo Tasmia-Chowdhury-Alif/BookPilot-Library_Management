@@ -1,0 +1,32 @@
+
+
+<!-- Book return + refund -->
+<div style="background:linear-gradient(135deg,#f0fff4,#d1fae5);padding:32px;font-family:'Helvetica Neue',Arial,sans-serif;color:#111;line-height:1.55;">
+  <h2 style="margin:0 0 16px;color:#16a34a;font-weight:700;">
+    ✅ Book Returned &amp; Refunded
+  </h2>
+
+  <p style="margin:0 0 12px;">
+    Hi <strong>{{ user.first_name }} {{ user.last_name }}</strong>,
+  </p>
+
+  <p style="margin:0 0 12px;">
+    We’ve successfully processed your return and refunded
+    <strong style="color:#16a34a;">৳{{ amount }}</strong> to your wallet.
+  </p>
+
+  <p style="margin:0 0 24px;">
+    Your updated balance is now
+    <strong style="color:#065f46;">৳{{ user.profile.balance }}</strong>.  
+    Thanks for keeping the books in great shape!
+  </p>
+
+  <hr style="border:none;height:1px;background:#86efac;margin:24px 0;" />
+
+  <p style="margin:0;">
+    We hope to see you back soon for more reads.
+  </p>
+  <p style="margin:4px 0 0;font-weight:700;color:#16a34a;">
+    — The Library Management Team
+  </p>
+</div>

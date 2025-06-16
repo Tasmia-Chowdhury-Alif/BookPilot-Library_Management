@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home - BookPilot{% endblock %}
+
+{% block content %}
+
+<!-- ========== Hero / Intro ========== -->
+<section
+    class="w-full flex flex-col-reverse lg:flex-row items-center gap-10 lg:gap-20 mt-10">
+
+    <!-- Text -->
+    <div class="w-full lg:w-1/2 space-y-4 text-center lg:text-left">
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight
+                   bg-gradient-to-r from-primary to-accent inline-block text-transparent
+                   bg-clip-text">
+            Discover • Borrow • Grow
+        </h1>
+
+        <p class="text-gray-700 leading-relaxed">
+            Your Smart Companion for Books & Borrowing.
+            Manage your personal library effortlessly.  
+            Browse thousands of titles, borrow with one click, and track your
+            reading journey—all in one intuitive dashboard.
+        </p>
+
+        {% if not request.user.is_authenticated %}
+            <a href="{% url 'register' %}"
+               class="inline-flex items-center gap-2 mt-4 px-6 py-3 rounded-lg
+                      bg-primary hover:bg-primary-dark text-white font-medium
+                      transition">
+                <i class="fa-solid fa-user-plus"></i> Create Account
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Logo / Illustration -->
+    <div class="w-full lg:w-1/2 flex justify-center">
+        <img src="{% static 'images/library-logo.jpg' %}"
+             alt="Library logo"
+             class="max-w-[280px] sm:max-w-xs lg:max-w-sm object-contain">
+    </div>
+</section>
+
+
+
+<!-- ========== Category Filter ========== -->
+<section class="mt-14">
+    <h2 class="sr-only">Filter by Category</h2>
+
+    <div
+        class="flex overflow-x-auto sm:justify-center gap-3 py-4
+               px-1 rounded-lg bg-white shadow-inner">
+
+        <!-- “All” pseudo‑category -->
+        <a href="{% url 'home' %}"
+           class="flex-shrink-0 px-5 py-2 rounded-full font-medium
+                  bg-gradient-to-r from-gray-200 to-gray-100
+                  hover:from-primary hover:to-accent hover:text-white
+                  transition">
+            All
+        </a>
+
+        {% for category in categories %}
+            <a href="{% url 'category-wise' category.slug %}"
+               class="flex-shrink-0 px-5 py-2 rounded-full font-medium
+                      bg-gradient-to-r from-gray-200 to-gray-100
+                      hover:from-primary hover:to-accent hover:text-white
+                      transition">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+    </div>
+</section>
+
+
+
+<!-- ========== Results Count ========== -->
+<p class="text-center text-lg sm:text-xl font-medium text-primary mt-10">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    Results found : {{ books|length }}
+</p>
+
+
+
+<!-- ========== Books Grid ========== -->
+<section class="mt-8">
+    <div
+        class="grid gap-8
+               sm:grid-cols-2
+               lg:grid-cols-3
+               2xl:grid-cols-4">
+
+        {% for book in books %}
+            <div
+                class="group bg-white rounded-xl shadow hover:shadow-2xl
+                       transition-shadow duration-300 overflow-hidden
+                       flex flex-col">
+
+                <!-- Cover -->
+                <div
+                    class="relative h-48 w-full
+                           bg-gradient-to-br from-primary via-accent to-primary/80
+                           flex justify-center items-center">
+                    {% if book.image %}
+                        <img src="{{ book.image.url }}"
+                             alt="{{ book.title }}"
+                             class="h-full w-full object-cover
+                                    transition-transform duration-300
+                                    group-hover:scale-105">
+                    {% else %}
+                        <i class="fa-solid fa-book text-6xl text-white/80"></i>
+                    {% endif %}
+                    {% if book.is_borrowed %}
+                        <span
+                            class="absolute top-2 right-2
+                                   bg-red-600 text-white text-xs
+                                   px-2 py-0.5 rounded">
+                            <i class="fa-solid fa-lock"></i> Borrowed
+                        </span>
+                    {% endif %}
+                </div>
+
+                <!-- Content -->
+                <div class="p-5 flex-1 flex flex-col">
+                    <h3 class="text-lg font-semibold mb-1 truncate">
+                        {{ book.title }}
+                    </h3>
+
+                    <p class="text-gray-600 text-sm mb-3 line-clamp-2">
+                        {{ book.description|truncatewords:25 }}
+                    </p>
+
+                    <!-- Price + Categories -->
+                    <div class="mt-auto space-y-2">
+                        <span
+                            class="inline-flex items-center gap-1 text-primary
+                                   font-medium">
+                            <i class="fa-solid fa-tag"></i>
+                            {{ book.price }} ৳
+                        </span>
+
+                        <div class="flex flex-wrap gap-2 pt-1">
+                            {% for cat in book.category.all %}
+                                <span
+                                    class="text-xs bg-primary/10 text-primary
+                                           px-2 py-0.5 rounded-full">
+                                   {{ cat.name }}
+                                </span>
+                            {% endfor %}
+                        </div>
+
+                        <a href="{% url 'details' book.id %}"
+                           class="inline-flex items-center gap-2 mt-3
+                                  text-sm font-medium text-accent
+                                  hover:text-accent-dark
+                                  transition">
+                            View Details
+                            <i class="fa-solid fa-arrow-right-long"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center flex-wrap mx-5 ">
+        <div class="col-6 " style="padding: 0px 100px 0px 40px;">
+            <h1>Wellcome to BookPilot</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum, voluptatum nesciunt odit dicta facere ducimus rem molestias amet, reprehenderit facilis eaque repellendus deleniti corporis modi earum tempore iste neque! Dignissimos veritatis laudantium voluptates laboriosam maiores tempora assumenda mollitia perspiciatis corrupti sapiente eos vitae soluta, itaque sit numquam beatae nihil commodi expedita iure. Quisquam eligendi ullam mollitia soluta recusandae quod placeat at odio autem consequuntur doloribus quibusdam corrupti veniam delectus vero molestias, nulla facilis vitae dolor sapiente dicta! Asperiores impedit ipsum suscipit dolores tempore nemo repellendus hic, sit cumque omnis dicta, illum laborum sint numquam necessitatibus dolor ut recusandae quaerat rerum.</p>
+        </div>
+        <div class="col-6">
+            <img style="width: 100%; height: 840px;" src="{% static 'images/home-image.jpg' %}" />
+        </div>
+        
+    </div>
+    
+    
+    <div class="d-flex flex-wrap py-4 d-flex justify-content-center">
+        <div class="bg-white rounded p-4 text-center" style="margin-top: 100px; width: 80%;">
+            <h4 class="pb-4">All Categories</h4>
+            {% for category in categories %}
+                <div class="d-inline mx-3">
+                    <input class="form-check-input" type="radio" name="category" id="flexRadioDefault{{category.id}}" onclick="location.href='{% url 'category-wise' category.slug %}';" >
+                    <label class="form-check-label ps-2" for="flexRadioDefault{{category.id}}">
+                        {{category.name}}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+            
+        <div class="text-center text-success p-3 mx-auto " style="width: 95%; margin-top: 40px; margin-bottom: 40px;">
+            <h1 >Results found : {{ books | length }}</h1>
+        </div>
+        
+        <div class="my-2 row d-flex justify-content-evenly" style="width: 80%;"> 
+            {% for book in books %}
+                <div class="col-sm-6 " style="width: 40%;">
+                    <div class="card my-3 p-3" >
+                        <div class="card-body">
+                            {% if book.image %}
+                        
+                            <div class="text-center">
+                                <img src="{{ book.image.url }}" class="card-img-top mx-auto" alt="" style="width: 80%; height: auto;">
+                            </div>
+
+
+                            {% endif %}
+
+                            <h4 class="card-title mt-4">{{ book.title }}</h4>
+                            <p class="card-text">{{ book.description | truncatewords:40 }}</a></p> 
+                            <p class="card-text">Borrow Price : {{ book.price }} Taka</p>
+                            <p>Category : 
+                                {% for cat in book.category.all %}
+                                    <button class="btn btn-info btn-sm m-2">{{ cat.name }}</button>
+                                {% endfor %}
+                            </p>
+                            <a class="btn btn-warning btn-sm text-decoration-none text-black" href="{% url 'details' book.id %}">View Details</a> 
+                            
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock content %} {% endcomment %}

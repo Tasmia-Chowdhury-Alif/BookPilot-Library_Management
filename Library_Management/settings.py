@@ -100,12 +100,25 @@ WSGI_APPLICATION = 'Library_Management.wsgi.application'
 
 
 # on Render's PostgreSQL server
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Replace this value with your local database's connection string.
+#         default=env("EXTERNAL_DB_URL"),
+#     )
+# }
+
+# Supabase PostgreSQL DB
 DATABASES = {
-    'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default=env("EXTERNAL_DB_URL"),
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env("DB_NAME"),
+        'USER': env("DB_USER"),
+        'PASSWORD': env("DB_PASSWORD"),
+        'HOST': env("DB_HOST"),
+        'PORT': env("DB_PORT")
+    }
 }
+
 
 
 # Password validation

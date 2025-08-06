@@ -31,7 +31,9 @@
         <label for="{{ form.password.id_for_label }}" class="block mb-1 text-sm font-medium text-gray-700">
           {{ form.password.label }}<span class="text-red-500">*</span>
         </label>
-        {{ form.password }}
+        <div class="password-wrapper relative">
+          {{ form.password }}
+        </div>
         {% if form.password.errors %}
           <p class="mt-1 text-sm text-red-600">{{ form.password.errors.0 }}</p>
         {% endif %}
@@ -51,22 +53,34 @@
   </div>
 
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('input[type="password"]').forEach(field => {
+    // Wrap parent if not already
+    const wrapper = field.closest('.password-wrapper');
+    if (wrapper) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "absolute inset-y-0 right-0 flex items-center px-3 text-gray-500";
+      btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+
+      btn.addEventListener("click", function() {
+        const icon = this.querySelector("i");
+        if (field.type === "password") {
+          field.type = "text";
+          icon.classList.remove("fa-eye");
+          icon.classList.add("fa-eye-slash");
+        } else {
+          field.type = "password";
+          icon.classList.remove("fa-eye-slash");
+          icon.classList.add("fa-eye");
+        }
+      });
+
+      wrapper.appendChild(btn);
+    }
+  });
+});
+</script>
 {% endblock content %}
-
-
-
-
-
-{% comment %} {% extends "base.html" %}
-
-{% block content %}
-
-    {% load crispy_forms_tags %}
-    <form method="post" style="width: 50%; height: 500px; margin:auto;" enctype="multipart/form-data" class="pt-4">
-        <h1>{{title}}</h1>
-        {% csrf_token %}
-        {{form|crispy}}
-        <button type="submit" class="btn btn-primary mt-2">Submit</button>
-    </form>  
-
-{% endblock content %} {% endcomment %}

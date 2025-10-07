@@ -8,6 +8,9 @@
 ## 📋 Overview
 BookPilot is a full-stack Django application designed to streamline library management with a user-friendly, responsive interface. This project demonstrates my proficiency in building secure, scalable web applications with modern technologies, featuring robust backend logic, polished frontend design, and seamless database integration. Deployed on **Render**, it highlights my ability to deliver production-ready solutions.
 
+## 🚀 Live Demo  
+🔗 **BookPilot:** [https://bookpilot-library-management.onrender.com](https://bookpilot-library-management.onrender.com) 
+
 ## 🛠 Technologies Used
 - **Backend**: Django 5.2 (Core framework for routing, authentication, and logic)
 

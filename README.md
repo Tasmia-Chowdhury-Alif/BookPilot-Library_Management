@@ -1,6 +1,5 @@
 # BookPilot 📚📖
 
-*Modern library management system showcasing full-stack Django expertise with a sleek, responsive UI.*
 
 [![Django](https://img.shields.io/badge/Django-5.2-092E20?style=for-the-badge&logo=django)](https://www.djangoproject.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-336791?style=for-the-badge&logo=postgresql)](https://supabase.com/) 
 <br>
